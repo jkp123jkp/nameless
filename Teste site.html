@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nameless Bleach Online - 2D Anime MMORPG</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Poppins:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0f172a;
+            color: #e2e8f0;
+            background-image: url('https://images.unsplash.com/photo-1633613286848-e6f43bbafb8d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+        }
+        
+        .hero-overlay {
+            background: rgba(15, 23, 42, 0.85);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .game-card {
+            transition: all 0.3s ease;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #3b82f6;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .character-card {
+            perspective: 1000px;
+        }
+        
+        .character-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        
+        .character-card:hover .character-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .character-front, .character-back {
+            backface-visibility: hidden;
+        }
+        
+        .character-back {
+            transform: rotateY(180deg);
+        }
+        
+        .countdown-item {
+            background: rgba(30, 41, 59, 0.7);
+        }
+        
+        .footer-links a:hover {
+            color: #3b82f6;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-gray-900/80 backdrop-blur-md fixed w-full z-50 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <a href="#" class="flex items-center">
+                            <img class="h-10 w-10" src="https://via.placeholder.com/40" alt="Nameless Bleach Online Logo">
+                            <span class="ml-2 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-600">Nameless Bleach Online</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#home" class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                        <a href="#features" class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Features</a>
+                        <a href="#characters" class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Characters</a>
+                        <a href="#media" class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Media</a>
+                        <a href="#download" class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Download</a>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <a href="#register" class="btn-primary text-white px-4 py-2 rounded-md text-sm font-medium">Register Now</a>
+                </div>
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none">
+                        <span class="sr-only">Open main menu</span>
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div class="hidden md:hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Home</a>
+                <a href="#features" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Features</a>
+                <a href="#characters" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Characters</a>
+                <a href="#media" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Media</a>
+                <a href="#download" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Download</a>
+                <a href="#register" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-blue-600">Register Now</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative pt-24 pb-32 hero-overlay">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-600">
+                        Enter the Soul Society
+                    </h1>
+                    <p class="text-lg md:text-xl text-gray-300 mb-8">
+                        Experience the world of Bleach like never before in this immersive 2D MMORPG. Battle Hollows, master your Zanpakuto, and rise through the ranks of the Soul Society.
+                    </p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <a href="#download" class="btn-primary text-white px-8 py-3 rounded-lg font-semibold text-center">
+                            <i class="fas fa-download mr-2"></i> Download Now
+                        </a>
+                        <a href="#trailer" class="bg-gray-800 hover:bg-gray-700 text-white px-8 py-3 rounded-lg font-semibold text-center border border-gray-700">
+                            <i class="fas fa-play mr-2"></i> Watch Trailer
+                        </a>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center">
+                    <img src="https://via.placeholder.com/500x400" alt="Game Screenshot" class="rounded-lg shadow-2xl border-2 border-blue-500/30">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Countdown Section -->
+    <section class="py-12 bg-gradient-to-b from-blue-900/50 to-gray-900/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold mb-8">Open Beta Starts In</h2>
+            <div class="flex justify-center space-x-4">
+                <div class="countdown-item px-6 py-4 rounded-lg">
+                    <div class="text-4xl font-bold" id="days">00</div>
+                    <div class="text-gray-400">Days</div>
+                </div>
+                <div class="countdown-item px-6 py-4 rounded-lg">
+                    <div class="text-4xl font-bold" id="hours">00</div>
+                    <div class="text-gray-400">Hours</div>
+                </div>
+                <div class="countdown-item px-6 py-4 rounded-lg">
+                    <div class="text-4xl font-bold" id="minutes">00</div>
+                    <div class="text-gray-400">Minutes</div>
+                </div>
+                <div class="countdown-item px-6 py-4 rounded-lg">
+                    <div class="text-4xl font-bold" id="seconds">00</div>
+                    <div class="text-gray-400">Seconds</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 hero-overlay">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">Game Features</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Discover what makes Nameless Bleach Online the ultimate Bleach gaming experience
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="game-card p-6 rounded-lg border border-gray-800">
+                    <div class="text-blue-400 mb-4">
+                        <i class="fas fa-swords fa-3x"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Zanpakuto Customization</h3>
+                    <p class="text-gray-300">
+                        Forge and evolve your unique Zanpakuto, unlocking powerful abilities and transformations as you progress.
+                    </p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="game-card p-6 rounded-lg border border-gray-800">
+                    <div class="text-blue-400 mb-4">
+                        <i class="fas fa-users fa-3x"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Clan Battles</h3>
+                    <p class="text-gray-300">
+                        Join or create a clan and compete in massive PvP battles for control of key locations in the Soul Society.
+                    </p>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="game-card p-6 rounded-lg border border-gray-800">
+                    <div class="text-blue-400 mb-4">
+                        <i class="fas fa-dungeon fa-3x"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Hollow Raids</h3>
+                    <p class="text-gray-300">
+                        Team up with other players to take down powerful Hollows and Arrancars in challenging dungeon raids.
+                    </p>
+                </div>
+                
+                <!-- Feature 4 -->
+                <div class="game-card p-6 rounded-lg border border-gray-800">
+                    <div class="text-blue-400 mb-4">
+                        <i class="fas fa-route fa-3x"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Branching Storylines</h3>
+                    <p class="text-gray-300">
+                        Your choices matter! Experience multiple story paths based on your decisions and allegiances.
+                    </p>
+                </div>
+                
+                <!-- Feature 5 -->
+                <div class="game-card p-6 rounded-lg border border-gray-800">
+                    <div class="text-blue-400 mb-4">
+                        <i class="fas fa-tshirt fa-3x"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Cosmetic Customization</h3>
+                    <p class="text-gray-300">
+                        Collect and equip hundreds of cosmetic items to create your perfect Shinigami look.
+                    </p>
+                </div>
+                
+                <!-- Feature 6 -->
+                <div class="game-card p-6 rounded-lg border border-gray-800">
+                    <div class="text-blue-400 mb-4">
+                        <i class="fas fa-trophy fa-3x"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Ranking System</h3>
+                    <p class="text-gray-300">
+                        Climb the ranks from unseated officer to Captain, unlocking new abilities and responsibilities.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Characters Section -->
+    <section id="characters" class="py-20 bg-gradient-to-b from-gray-900/80 to-blue-900/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">Playable Characters</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Choose your path and master unique abilities
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Character 1 -->
+                <div class="character-card">
+                    <div class="character-inner relative w-full h-80">
+                        <div class="character-front absolute w-full h-full bg-gray-800 rounded-lg overflow-hidden border-2 border-blue-500/30">
+                            <img src="https://via.placeholder.com/300x400" alt="Shinigami" class="w-full h-full object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                                <h3 class="text-xl font-bold">Shinigami</h3>
+                                <p class="text-gray-300 text-sm">Soul Reaper</p>
+                            </div>
+                        </div>
+                        <div class="character-back absolute w-full h-full bg-gray-800 rounded-lg p-6 border-2 border-blue-500/30 flex flex-col justify-center">
+                            <h3 class="text-xl font-bold mb-2">Shinigami</h3>
+                            <p class="text-gray-300 text-sm mb-4">Masters of Zanpakuto and spiritual energy</p>
+                            <ul class="text-sm text-gray-300 space-y-2">
+                                <li><i class="fas fa-check text-blue-400 mr-2"></i> Bankai Transformations</li>
+                                <li><i class="fas fa-check text-blue-400 mr-2"></i> Kido Spells</li>
+                                <li><i class="fas fa-check text-blue-400 mr-2"></i> Flash Step</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Character 2 -->
+                <div class="character-card">
+                    <div class="character-inner relative w-full h-80">
+                        <div class="character-front absolute w-full h-full bg-gray-800 rounded-lg overflow-hidden border-2 border-blue-500/30">
+                            <img src="https://via.placeholder.com/300x400" alt="Quincy" class="w-full h-full object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                                <h3 class="text-xl font-bold">Quincy</h3>
+                                <p class="text-gray-300 text-sm">Spirit Archer</p>
+                            </div>
+                        </div>
+                        <div class="character-back absolute w-full h-full bg-gray-800 rounded-lg p-6 border-2 border-blue-500/30 flex flex-col justify-center">
+                            <h3 class="text-xl font-bold mb-2">Quincy</h3>
+                            <p class="text-gray-300 text-sm mb-4">Masters of ranged spiritual attacks</p>
+                            <ul class="text-sm text-gray-300 space-y-2">
+                                <li><i class="fas fa-check text-blue-400 mr-2"></i> Spirit Arrows</li>
+                                <li><i class="fas fa-check text-blue-400 mr-2"></i> Vollständig Form</li>
+                                <li><i class="fas fa-check text-blue-400 mr-2"></i> Advanced Hirenkyaku</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Character 3 -->
+                <div class="character-card">
+                    <div class="character-inner relative w-full h-80">
+                        <div class="character-front absolute w-full h-full bg-gray-800 rounded-lg overflow-hidden border-2 border-blue-500/30">
+                            <img src="https://via.placeholder.com/300x400" alt="Hollow" class="w-full h-full object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                                <h3 class="text-xl font-bold">Hollow</h3>
+                                <p class="text-gray-300 text-sm">Dark Spirit</p>
+                            </div>
+                        </div>
+                        <div class="character-back absolute w-full h-full bg-gray-800 rounded-lg p-6 border-2 border-blue-500/30 flex flex-col justify-center">
+                            <h3 class="text-xl font-bold mb-2">Hollow</h3>
+                            <p class="text-gray-300 text-sm mb-4">Powerful corrupted spirits</p>
+                            <ul class="text-sm text-gray-300 space-y-2">
+                                <li><i class="fas fa-check text-blue-400 mr-2"></i> Cero Attacks</li>
+                                <li><i class="fas fa-check text-blue-400 mr-2"></i> Sonído Movement</li>
+                                <li><i class="fas fa-check text-blue-400 mr-2"></i> Resurrection Forms</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Character 4 -->
+                <div class="character-card">
+                    <div class="character-inner relative w-full h-80">
+                        <div class="character-front absolute w-full h-full bg-gray-800 rounded-lg overflow-hidden border-2 border-blue-500/30">
+                            <img src="https://via.placeholder.com/300x400" alt="Fullbringer" class="w-full h-full object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                                <h3 class="text-xl font-bold">Fullbringer</h3>
+                                <p class="text-gray-300 text-sm">Object Empowered</p>
+                            </div>
+                        </div>
+                        <div class="character-back absolute w-full h-full bg-gray-800 rounded-lg p-6 border-2 border-blue-500/30 flex flex-col justify-center">
+                            <h3 class="text-xl font-bold mb-2">Fullbringer</h3>
+                            <p class="text-gray-300 text-sm mb-4">Humans with Hollow powers</p>
+                            <ul class="text-sm text-gray-300 space-y-2">
+                                <li><i class="fas fa-check text-blue-400 mr-2"></i> Object Empowerment</li>
+                                <li><i class="fas fa-check text-blue-400 mr-2"></i> Enhanced Physical Abilities</li>
+                                <li><i class="fas fa-check text-blue-400 mr-2"></i> Unique Bringer Light</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Media Section -->
+    <section id="media" class="py-20 hero-overlay">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">Game Media</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    See the game in action
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div class="relative overflow-hidden rounded-lg aspect-video bg-black">
+                    <img src="https://via.placeholder.com/800x450" alt="Game Screenshot 1" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white rounded-full w-16 h-16 flex items-center justify-center">
+                            <i class="fas fa-play text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="relative overflow-hidden rounded-lg aspect-video bg-black">
+                    <img src="https://via.placeholder.com/800x450" alt="Game Screenshot 2" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white rounded-full w-16 h-16 flex items-center justify-center">
+                            <i class="fas fa-play text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                <img src="https://via.placeholder.com/300x200" alt="Screenshot 1" class="rounded-lg cursor-pointer hover:opacity-80 transition">
+                <img src="https://via.placeholder.com/300x200" alt="Screenshot 2" class="rounded-lg cursor-pointer hover:opacity-80 transition">
+                <img src="https://via.placeholder.com/300x200" alt="Screenshot 3" class="rounded-lg cursor-pointer hover:opacity-80 transition">
+                <img src="https://via.placeholder.com/300x200" alt="Screenshot 4" class="rounded-lg cursor-pointer hover:opacity-80 transition">
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download" class="py-20 bg-gradient-to-b from-blue-900/50 to-gray-900/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">Download Now</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Join thousands of players in the Soul Society
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- PC Download -->
+                <div class="game-card p-8 rounded-lg border border-gray-800 text-center">
+                    <div class="text-blue-400 mb-6">
+                        <i class="fas fa-desktop fa-4x"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Windows PC</h3>
+                    <p class="text-gray-300 mb-6">
+                        Minimum System Requirements:
+                    </p>
+                    <ul class="text-sm text-gray-300 space-y-2 mb-8">
+                        <li><i class="fas fa-check-circle text-blue-400 mr-2"></i> OS: Windows 10 64-bit</li>
+                        <li><i class="fas fa-check-circle text-blue-400 mr-2"></i> CPU: Intel i5 4th Gen</li>
+                        <li><i class="fas fa-check-circle text-blue-400 mr-2"></i> RAM: 8GB</li>
+                        <li><i class="fas fa-check-circle text-blue-400 mr-2"></i> GPU: GTX 750 Ti</li>
+                        <li><i class="fas fa-check-circle text-blue-400 mr-2"></i> Storage: 15GB</li>
+                    </ul>
+                    <a href="#" class="btn-primary text-white px-6 py-3 rounded-lg font-semibold inline-block">
+                        <i class="fas fa-download mr-2"></i> Download (2.4GB)
+                    </a>
+                </div>
+                
+                <!-- Mac Download -->
+                <div class="game-card p-8 rounded-lg border border-gray-800 text-center">
+                    <div class="text-blue-400 mb-6">
+                        <i class="fas fa-laptop fa-4x"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Mac OS</h3>
+                    <p class="text-gray-300 mb-6">
+                        Minimum System Requirements:
+                    </p>
+                    <ul class="text-sm text-gray-300 space-y-2 mb-8">
+                        <li><i class="fas fa-check-circle text-blue-400 mr-2"></i> OS: macOS Big Sur 11.0</li>
+                        <li><i class="fas fa-check-circle text-blue-400 mr-2"></i> CPU: Apple M1 or Intel i5</li>
+                        <li><i class="fas fa-check-circle text-blue-400 mr-2"></i> RAM: 8GB</li>
+                        <li><i class="fas fa-check-circle text-blue-400 mr-2"></i> GPU: Integrated</li>
+                        <li><i class="fas fa-check-circle text-blue-400 mr-2"></i> Storage: 15GB</li>
+                    </ul>
+                    <a href="#" class="btn-primary text-white px-6 py-3 rounded-lg font-semibold inline-block">
+                        <i class="fas fa-download mr-2"></i> Download (2.1GB)
+                    </a>
+                </div>
+                
+                <!-- Register -->
+                <div class="game-card p-8 rounded-lg border border-gray-800 text-center">
+                    <div class="text-blue-400 mb-6">
+                        <i class="fas fa-user-plus fa-4x"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Register Account</h3>
+                    <p class="text-gray-300 mb-6">
+                        Create your free account to start playing
+                    </p>
+                    <form class="space-y-4 mb-6">
+                        <input type="text" placeholder="Username" class="w-full px-4 py-2 rounded bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="email" placeholder="Email" class="w-full px-4 py-2 rounded bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="password" placeholder="Password" class="w-full px-4 py-2 rounded bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button type="submit" class="btn-primary text-white w-full py-2 rounded-lg font-semibold">
+                            Create Account
+                        </button>
+                    </form>
+                    <p class="text-sm text-gray-400">
+                        By registering, you agree to our <a href="#" class="text-blue-400 hover:underline">Terms of Service</a> and <a href="#" class="text-blue-400 hover:underline">Privacy Policy</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="py-16 bg-gray-900/80">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-2xl font-bold mb-4">Stay Updated</h2>
+            <p class="text-gray-300 mb-8 max-w-2xl mx-auto">
+                Subscribe to our newsletter for the latest news, updates, and exclusive offers about Nameless Bleach Online.
+            </p>
+            <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                <input type="email" placeholder="Your email address" class="flex-grow px-4 py-3 rounded bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button type="submit" class="btn-primary text-white px-6 py-3 rounded font-semibold">
+                    Subscribe
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900/90 text-gray-400 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-white text-lg font-semibold mb-4">Nameless Bleach Online</h3>
+                    <p class="mb-4">
+                        The ultimate 2D MMORPG experience set in the Bleach universe.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-twitter fa-lg"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-discord fa-lg"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-youtube fa-lg"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-facebook fa-lg"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-white text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="footer-links space-y-2">
+                        <li><a href="#home" class="hover:text-white">Home</a></li>
+                        <li><a href="#features" class="hover:text-white">Features</a></li>
+                        <li><a href="#characters" class="hover:text-white">Characters</a></li>
+                        <li><a href="#media" class="hover:text-white">Media</a></li>
+                        <li><a href="#download" class="hover:text-white">Download</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-white text-lg font-semibold mb-4">Legal</h3>
+                    <ul class="footer-links space-y-2">
+                        <li><a href="#" class="hover:text-white">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-white">Cookie Policy</a></li>
+                        <li><a href="#" class="hover:text-white">Refund Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-white text-lg font-semibold mb-4">Support</h3>
+                    <ul class="footer-links space-y-2">
+                        <li><a href="#" class="hover:text-white">Help Center</a></li>
+                        <li><a href="#" class="hover:text-white">Community</a></li>
+                        <li><a href="#" class="hover:text-white">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-white">Status</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 text-sm text-center">
+                <p>© 2023 Nameless Bleach Online. All rights reserved.</p>
+                <p class="mt-2">Bleach is a registered trademark of Tite Kubo/Shueisha, TV TOKYO, dentsu, Pierrot. This game is a non-profit fan project.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-blue-600 text-white p-3 rounded-full shadow-lg hidden">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Back to top button
+        const backToTopButton = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.remove('hidden');
+            } else {
+                backToTopButton.classList.add('hidden');
+            }
+        });
+        
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+        
+        // Countdown timer
+        function updateCountdown() {
+            const now = new Date();
+            const openBetaDate = new Date('2023-12-15T00:00:00');
+            const diff = openBetaDate - now;
+            
+            if (diff <= 0) {
+                document.getElementById('days').textContent = '00';
+                document.getElementById('hours').textContent = '00';
+                document.getElementById('minutes').textContent = '00';
+                document.getElementById('seconds').textContent = '00';
+                return;
+            }
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+        
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
